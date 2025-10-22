@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const API_SERVER_HOST = "http://localhost:9000";
 
-const prefix = `${API_SERVER_HOST}/api/members`;
+const prefix = `${API_SERVER_HOST}/api/v1/members`;
 
 // 로그인 요청 처리
 export const postLogin = async (loginParam) => {
@@ -18,6 +18,6 @@ export const postLogin = async (loginParam) => {
     console.log('res : ', res);
 
     return res.data;
-    
+
 
 }
