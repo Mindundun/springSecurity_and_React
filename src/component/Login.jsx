@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { postLogin } from "../api/memberApi";
 import { data, replace, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../slices/loginSlice";
 
 const initialState = {
     email: '',
@@ -13,6 +15,8 @@ function Login() {
 
     // navigate
     const navigate = useNavigate(); 
+
+    const dispatch = useDispatch();
     
     // event handle
     const handleChange = (e) => {
@@ -25,6 +29,8 @@ function Login() {
             .then((data) => {
                 if (!data.error) {
                     console.log('data :', data);
+                    dispatch(login(loginParam));
+                    setLoginParam({...loginParam});
                     navigate('/', {replace: true});
                 } else {
                     alert("아이디와 비밀번호를 정확히 입력하세요.");
