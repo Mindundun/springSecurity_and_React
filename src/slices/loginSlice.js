@@ -1,13 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { removeCookie, setCookies } from "../util/cookieUtil";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { removeCookie, setCookies, getCookies } from "../util/cookieUtil";
+import { postLogin } from "../api/memberApi";
 
 const initialState = {
     email: ''
 }
 
+const loadMemberCookie = () => {
+    // 새로고침 시 쿠키에 저장된 정보를 가져오고자. . 
+    const member = getCookies('member');
+    return member;
+}
+
+// 비동기 액션 생성 함수
+export const postLoginAsync = createAsyncThunk("loginSlice/postLoginAsync",
+    // 비동기 작업을 처리하는 로직
+    async (param) => {
+        const res = await postLogin(param);
+        console.log("res : ", res);
+        
+        return res; // Promise 객체
+    }
+)
+
 const loginSlice = createSlice({
     name: 'loginSlice',
-    initialState: initialState,
+    initialState: loadMemberCookie() || initialState,
     reducers:{
         login: (state, action) => {
             console.log("action : ", action);
@@ -30,7 +48,31 @@ const loginSlice = createSlice({
             // email 정보 초기화
             return {...initialState};
         }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(postLoginAsync.pending, (state, action) => {
+            console.log("pending action:", action);            
+
+        })
+        .addCase(postLoginAsync.fulfilled, (state, action) => {
+            console.log("fulfilled action:", action);
+            console.log("fulfilled action.payload:", action.payload); // API 서버 응답 데이터
+
+            if (!action.payload.error){
+                setCookies("member",action.payload, 1);
+            }
+            
+            return action.payload; // 리덕스 스토어에 있는 email 상태가 업데이트 된다.
+
+        })
+        .addCase(postLoginAsync.rejected, (state, action) => {
+            console.log("rejected action:", action);
+            
+
+        })
     }
+
+
 });
 
 

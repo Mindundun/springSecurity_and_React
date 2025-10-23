@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { postLogin } from "../api/memberApi";
-import { data, replace, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../slices/loginSlice";
+import { login, postLoginAsync } from "../slices/loginSlice";
 
 
 const initialState = {
@@ -26,23 +26,41 @@ function Login() {
     }
 
     const handleClick = (e) => {
-        postLogin(loginParam)
+        // postLogin(loginParam)
+        //     .then((data) => {
+        //         if (!data.error) {
+        //             console.log('data :', data);
+        //             // dispatch(login(loginParam));
+        //             dispatch(login(data));
+        //             setLoginParam({...loginParam});
+        //             navigate('/', {replace: true}); // 로그인 성공 시 Home 화면으로 이동
+        //         } else {
+        //             alert("아이디와 비밀번호를 정확히 입력하세요.");
+        //             setLoginParam({...loginParam})
+        //         }
+
+        //     })
+        //     .catch((error) => {
+        //         console.log('error :', error);
+        //     })
+
+        // 비동기 액션 생성자 함수 사용
+        dispatch(postLoginAsync(loginParam))
+            .unwrap()   // Promise 객체
             .then((data) => {
                 if (!data.error) {
-                    console.log('data :', data);
-                    // dispatch(login(loginParam));
-                    dispatch(login(data));
-                    setLoginParam({...loginParam});
-                    navigate('/', {replace: true}); // 로그인 성공 시 Home 화면으로 이동
+                    navigate("/", {replace: true})
+                    // setLoginParam({...initialState});
+                    
                 } else {
-                    alert("아이디와 비밀번호를 정확히 입력하세요.");
-                    setLoginParam({...loginParam})
+                    alert('아이디와 비밀번호를 정확히 입력해주세요');
+                    setLoginParam({...loginParam});
                 }
-
             })
             .catch((error) => {
-                console.log('error :', error);
-            })
+                console.log("error : ", error);
+                
+            }) 
     }
     
     return (
