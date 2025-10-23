@@ -15,9 +15,10 @@ function App() {
     return (
         <>  
             <Link to={'/'}>홈</Link>&nbsp;&nbsp;&nbsp;
-            {
+            {/* {
                 email ? <span style={{margin: '5px'}}><Link to={'/item'}>상품조회</Link></span> : <></>
-            }
+            } */}
+            <span style={{margin: '5px'}}><Link to={'/item'}>상품조회</Link></span>
             {
                 email ? <span style={{margin: '5px'}}><Link to={'/logout'}>로그아웃</Link></span>  : <span style={{margin: '5px'}}><Link to={'/login'}>로그인</Link></span> 
             }

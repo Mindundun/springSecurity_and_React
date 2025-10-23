@@ -5,6 +5,7 @@ export const API_SERVER_HOST = "http://localhost:9000";
 const prefix = `${API_SERVER_HOST}/api/v1/members`;
 
 // 로그인 요청 처리
+// 로그인 시 토큰은 필요없음!
 export const postLogin = async (loginParam) => {
 
     const header = {headers : {'Content-Type': 'x-www-from-urlencoded'}};
