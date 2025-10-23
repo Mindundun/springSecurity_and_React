@@ -4,6 +4,7 @@ import { data, replace, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../slices/loginSlice";
 
+
 const initialState = {
     email: '',
     password: ''
@@ -29,16 +30,17 @@ function Login() {
             .then((data) => {
                 if (!data.error) {
                     console.log('data :', data);
-                    dispatch(login(loginParam));
+                    // dispatch(login(loginParam));
+                    dispatch(login(data));
                     setLoginParam({...loginParam});
-                    navigate('/', {replace: true});
+                    navigate('/', {replace: true}); // 로그인 성공 시 Home 화면으로 이동
                 } else {
                     alert("아이디와 비밀번호를 정확히 입력하세요.");
                     setLoginParam({...loginParam})
                 }
 
             })
-            .catch(() => {
+            .catch((error) => {
                 console.log('error :', error);
             })
     }
@@ -56,7 +58,7 @@ function Login() {
                 </form>
             </div>
  
-        <style jsx>{`
+        <style>{`
             body {
                 font-family: Arial, sans-serif;
                 background-color: #f5f5f5;
