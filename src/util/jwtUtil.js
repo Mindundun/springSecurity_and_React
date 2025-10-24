@@ -10,7 +10,6 @@ const refreshJWT = async (accessToken, refreshToken) => {
     const header = {headers: {'Authorization': `Bearer ${accessToken}`}};
 
 
-
     const res = await axios.get(`${host}/api/v1/refresh?refreshToken=${refreshToken}`, header);
 
     console.log("res---------------------", res);
@@ -27,6 +26,7 @@ const jwtAxios = axios.create();
 // config : 요청과 관련된 정보
 const beforeReq = (config) => {
 
+    // 정보는 쿠키에 담겨있으니 getCookies
     const member = getCookies('member');
 
     console.log('member : ', member);
@@ -35,7 +35,6 @@ const beforeReq = (config) => {
         console.log('Member not found');
 
         // 만약 인증된 사용자가 아니면 promise에서 reject호출(그 외 pending(대기), fulfiled(이행)상태가 존재)
-        
         return Promise.reject({
             response: {data: {error: "REQUIRED_LOGIN"}}
         
@@ -53,7 +52,7 @@ const beforeReq = (config) => {
 
 // 위의 Promis.reject 가 전달된다.
 // { response: {data: {error: "REQUIRED_LOGIN"}} }
-const requestFail = () => {
+const requestFail = (error) => {
 
     console.log('requestFail', error);
     return Promise.reject(error);    
@@ -90,8 +89,10 @@ const beforeRes = async (res) => {
         setCookies("member", JSON.stringify(member), 1); // 1일
 
         // 재발급된 토큰으로 재요청
+        // config : 요청과 관련된 설정
         const originalRequest = res.config;
 
+        // 헤더에 Authorization 영역에 accessToken을 넣음
         originalRequest.headers.Authorization = `Bearer ${result.accessToken}`;
 
         return await axios(originalRequest);        

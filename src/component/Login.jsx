@@ -46,7 +46,7 @@ function Login() {
 
         // 비동기 액션 생성자 함수 사용
         dispatch(postLoginAsync(loginParam))
-            .unwrap()   // Promise 객체
+            .unwrap()   // Promise 객체, 그래서 then과 catch를 사용할 수 있음
             .then((data) => {
                 if (!data.error) {
                     navigate("/", {replace: true})
